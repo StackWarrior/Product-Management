@@ -1,0 +1,16 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Product_Management.Models
+{
+    public class Category
+    {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Category name is required")]
+        [StringLength(100, MinimumLength = 2)]
+        [Display(Name = "Category Name")]
+        public string Name { get; set; } = string.Empty;
+
+        public ICollection<Product> Products { get; set; } = new List<Product>();
+    }
+}

@@ -1,0 +1,99 @@
+﻿@model Product_Management.Models.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-pencil-square me-2"></i>Edit Product</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ExistingImagePath" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label fw-bold"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label fw-bold"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label asp-for="Price" class="form-label fw-bold"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="Price" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Stock" class="form-label fw-bold"></label>
+                    <input asp-for="Stock" class="form-control" />
+                    <span asp-validation-for="Stock" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="CategoryId" class="form-label fw-bold"></label>
+                    <select asp-for="CategoryId" class="form-select"
+                            asp-items="ViewBag.Categories">
+                        <option value="">-- Select --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ImageFile" class="form-label fw-bold">Replace Image</label>
+
+                @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+                {
+                    <div class="mb-2">
+                        <small class="text-muted">Current image:</small><br />
+                        <img src="@Model.ExistingImagePath" id="currentImg"
+                             class="rounded" style="max-width:150px;" />
+                    </div>
+                }
+
+                <input asp-for="ImageFile" type="file" class="form-control"
+                       accept="image/*" id="imageInput" />
+                <img id="preview" src="#" class="mt-2 rounded"
+                     style="max-width:200px;display:none;" />
+            </div>
+
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-floppy me-1"></i>Save Changes
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function () {
+            const preview = document.getElementById('preview');
+            const current = document.getElementById('currentImg');
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    if (current) current.style.opacity = '0.4';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}
